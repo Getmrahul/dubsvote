@@ -11,8 +11,8 @@ def index():
     randNo1 = 0
     randNo2 = 0
     while randNo1 == randNo2:
-        randNo1 = randint(1,255)
-        randNo2 = randint(256,510)
+        randNo1 = randint(1,439)
+        randNo2 = randint(440,878)
     obj = db.db()
     v1 = obj.video(randNo1)
     v2 = obj.video(randNo2)
