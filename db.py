@@ -18,16 +18,10 @@ def connect():
 	return psycopg2.connect(det)
 
 class db(object):
-	def create(self, q):
+	def counts(self):
 		con = connect()
 		c = con.cursor()
-		c.execute(q)
-		con.commit()
-		con.close()
-	def login_e(self, email):
-		con = connect()
-		c = con.cursor()
-		q = "select name,status from clients where email='%s'" % (email)
+		q = "select count(*) from dubs;"
 		c.execute(q)
 		record = c.fetchone()
 		row = []
@@ -37,10 +31,10 @@ class db(object):
 			row.append(r)
 		con.close()
 		return row
-	def login_ep(self,email,password):
+	def video(self, id):
+		q = "select url, ol from dubs where id='%d'" % id
 		con = connect()
 		c = con.cursor()
-		q = "select * from clients where email='%s' and password='%s'" % (email, password)
 		c.execute(q)
 		record = c.fetchone()
 		row = []
@@ -50,30 +44,6 @@ class db(object):
 			row.append(r)
 		con.close()
 		return row
-	def pro(self, username):
-		con = connect()
-		c = con.cursor()
-		q = "select Count(*) from dubs;"
-		c.execute(q)
-		record = c.fetchone()
-		row = []
-		if not record:
-			return row
-		for r in record:
-			row.append(r)
-		con.close()
-		return row
-	def signup_username(self, username):
-		q = "select id, username from clients where username='%s'" % username
-		con = connect()
-		c = con.cursor()
-		c.execute(q)
-		record = c.fetchone()
-		con.close()
-		if not record:
-			return 1
-		else:
-			return 0
 	def createPoll(self, pollId, question, textvalue, textprop, tbl, ibl, nop, otype, email):
 		q = "insert into poll (pid, question, textvalue, textproperty, textblacklist, imageblacklist, noi, otype, email) values('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s')" % (pollId, question, textvalue, textprop, tbl, ibl, int(nop), int(otype), email)
 		con = connect()
@@ -218,30 +188,3 @@ class db(object):
 		c.execute(q)
 		con.commit()
 		con.close()
-
-url = "https://api.instagram.com/v1/tags/dubsmash/media/recent?access_token=1718233349.1fb234f.a3ce3d1ff2864de1914ce73b342481ad"
-mC = 0
-while mC < 500:
-	i = 0
-	r1 = urllib2.urlopen(url).read()
-	js = json.loads(r1)
-	url = js["pagination"]["next_url"]
-	dc = len(js["data"])
-	while i < dc:
-		try:
-			video = js["data"][i]["videos"]["low_bandwidth"]["url"]
-			sp = video.split('.')
-			lv = len(sp)
-			ol = js["data"][i]["link"]
-			if sp[lv-1].lower() == "mp4":
-				obj = db()
-				try:
-					obj.dubs(video,ol)
-					mC = mC + 1
-				except Exception as Exp:
-					print Exp
-		except Exception:
-			dd = 1
-			print "nv"
-		i = i + 1
-print "done"
