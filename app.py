@@ -15,16 +15,16 @@ def index():
     randNo2 = 20
     session['voted'] = ""
     obj = db.db()
-    #count = obj.counts()
-    #count2 = 0
-    #if (count[0] % 2) != 0:
-    #    count2 = (count[0]+1)/2
-    #    count2 = count2 - 1
-    #else:
-    #    count2 = count[0]/2
-    #while randNo1 == randNo2:
-    #    randNo1 = randint(1,count2)
-    #    randNo2 = randint(count2+1,count[0])
+    count = obj.counts()
+    count2 = 0
+    if (count[0] % 2) != 0:
+        count2 = (count[0]+1)/2
+        count2 = count2 - 1
+    else:
+        count2 = count[0]/2
+    while randNo1 == randNo2:
+        randNo1 = randint(1,count2)
+        randNo2 = randint(count2+1,count[0])
     #obj = db.db()
     v1 = obj.video(randNo1)
     v2 = obj.video(randNo2)
