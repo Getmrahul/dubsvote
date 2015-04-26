@@ -11,8 +11,8 @@ app.secret_key = os.urandom(25)
 @app.route('/')
 def index():
     #rand
-    randNo1 = 10
-    randNo2 = 20
+    randNo1 = 0
+    randNo2 = 0
     session['voted'] = ""
     obj = db.db()
     count = obj.counts()
