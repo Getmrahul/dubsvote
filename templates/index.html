@@ -168,12 +168,17 @@
                 swal({     title: "Oops...",     text: response.text,     type: "error",     confirmButtonText: "Okay" , confirmButtonColor: "#1abc9c"  });
             }
             else {
-                $('#v1').html('<video width="400" height="400" controls> <source src="'+response.v1+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
-                $('#v2').html('<video width="400" height="400" controls> <source src="'+response.v2+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
+                $('#v1').html('<video width="400" height="400" id="v11" controls> <source src="'+response.v1+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
+                $('#v2').html('<video width="400" height="400" id="v22" controls> <source src="'+response.v2+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
                 $('#v1btn').attr('data-id',response.id1);
                 $('#v1btn').attr('data-other',response.id2);
                 $('#v2btn').attr('data-id',response.id2);
                 $('#v2btn').attr('data-other',response.id1);
+                $('#v11').get(0).play();
+                $('#v11')[0].addEventListener('ended', function() {
+                    //do stuff
+                    $('#v22').get(0).play();
+                });
             }
         });
     }
@@ -215,13 +220,13 @@
         <div class="row ">
 
             <div class="col-md-6">
-                <center><div id="v1"><video width="400" height="400" controls>
+                <center><div id="v1"><video width="400" height="400"  id="v11" controls>
                     <source src="{{url1}}" type="video/mp4">
                         Your browser does not support HTML5 video.
                 </video></div><p><a href="{{ol1}}"></a><p></center>
             </div>
             <div class="col-md-6">
-                <center><div id="v2"><video width="400" height="400" controls>
+                <center><div id="v2"><video width="400" height="400" id="v22" controls>
                     <source src="{{url2}}" type="video/mp4">
                         Your browser does not support HTML5 video.
                 </video></div><p><a href="{{ol2}}"></a><p></center>
@@ -235,7 +240,7 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-4">
-                <center><button id="v1btn" data-id="{{id1}}" data-other="{{id2}}" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
+                <center><button id="v1btn" data-id="{{id1}}"  data-other="{{id2}}" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
                     Left
                 </button></center>
             </div>
@@ -258,7 +263,8 @@
 
 
     <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
-    <script src="static/js/vendor/jquery.min.js"></script>
+    <!--<script src="static/js/vendor/jquery.min.js"></script>-->
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="static/js/vendor/video.js"></script>
     <script src="static/js/flat-ui.min.js"></script>
@@ -266,6 +272,14 @@
     $(window).load(function() {
        $(".load").fadeOut('slow');
     });
+    $(document).ready(function(){
+        $('#v11').get(0).play();
+        $('#v11')[0].addEventListener('ended', function() {
+            //do stuff
+            $('#v22').get(0).play();
+        });
+    });
+    //
     function pop(data) {
     var url = $(data).data("href");
     var w = 670;

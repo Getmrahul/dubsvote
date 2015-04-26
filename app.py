@@ -28,6 +28,28 @@ def index():
     #obj = db.db()
     v1 = obj.video(randNo1)
     v2 = obj.video(randNo2)
+    flag = True
+    while flag:
+        try:
+            h = httplib2.Http()
+            resp = h.request(v1[0], 'HEAD')
+            assert int(resp[0]['status']) < 400
+            flag = False
+        except:
+            randNo1 = randint(1,count2)
+            v1 = obj.video(randNo1)
+            flag = True
+    flag = True
+    while flag:
+        try:
+            h = httplib2.Http()
+            resp = h.request(v2[0], 'HEAD')
+            assert int(resp[0]['status']) < 400
+            flag = False
+        except:
+            randNo2 = randint(count2+1,count[0])
+            v2 = obj.video(randNo2)
+            flag = True
     return render_template('index.html',id1 = randNo1, id2 = randNo2, url1 = v1[0].replace(" ",""), url2 = v2[0].replace(" ",""), ol1 = v1[1].replace(" ",""), ol2 = v2[1].replace(" ",""))
 
 @app.route('/submit', methods = ['GET','POST'])
@@ -88,6 +110,32 @@ def vote():
             obj = db.db()
             v1 = obj.video(randNo1)
             v2 = obj.video(randNo2)
+            flag = True
+            while flag:
+                try:
+                    h = httplib2.Http()
+                    resp = h.request(v1[0], 'HEAD')
+                    assert int(resp[0]['status']) < 400
+                    flag = False
+                except:
+                    randNo1 = randint(1,count2)
+                    while (randNo1 == other) or (str(randNo1) in sr):
+                        randNo1 = randint(1,count2)
+                    v1 = obj.video(randNo1)
+                    flag = True
+            flag = True
+            while flag:
+                try:
+                    h = httplib2.Http()
+                    resp = h.request(v2[0], 'HEAD')
+                    assert int(resp[0]['status']) < 400
+                    flag = False
+                except:
+                    randNo2 = randint(count2+1,count[0])
+                    while (randNo2 == other) or (str(randNo2) in sr):
+                        randNo2 = randint(count2+1,count[0])
+                    v2 = obj.video(randNo2)
+                    flag = True
             data = {"status" : 1, "v1": v1[0], "v2": v2[0], "id1" : randNo1, "id2" : randNo2}
             js = json.dumps(data)
             resp = Response(js, status = 200, mimetype = 'application/json')
