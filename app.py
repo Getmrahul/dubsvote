@@ -103,6 +103,14 @@ def vote():
         resp = Response(js, status = 200, mimetype = 'application/json')
         return resp
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/top')
+def top():
+    return render_template('top.html')
+
 ################flask server################
 if __name__ == "__main__":
 	app.run(debug=True)
