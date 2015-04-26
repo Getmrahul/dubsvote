@@ -44,13 +44,19 @@ class db(object):
 			row.append(r)
 		con.close()
 		return row
-	def createPoll(self, pollId, question, textvalue, textprop, tbl, ibl, nop, otype, email):
-		q = "insert into poll (pid, question, textvalue, textproperty, textblacklist, imageblacklist, noi, otype, email) values('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s')" % (pollId, question, textvalue, textprop, tbl, ibl, int(nop), int(otype), email)
-		con = connect()
-		c = con.cursor()
-		c.execute(q)
-		con.commit()
-		con.close()
+	def votes(self, vid):
+		try:
+			q = "insert into votes (vid) values('%d')" % vid
+			con = connect()
+			c = con.cursor()
+			c.execute(q)
+			con.commit()
+			con.close()
+			return True
+		except Excpetion:
+			#con.commit()
+			con.close()
+			return False
 
 	def account_check(self, email):
 		q = "select id, username from clients where email='%s'" % email
@@ -63,6 +69,28 @@ class db(object):
 			return 1
 		else:
 			return 0
+	def custom(self, url):
+		con = connect()
+		c = con.cursor()
+		try:
+			tq = "select count(1) from dubs where url='%s';" % url
+			c.execute(tq)
+			tdb = c.fetchone()
+			if tdb[0]:
+				con.commit()
+				con.close()
+				#print "\nDuplicate found-%s" % ol
+				return False
+			else:
+				q = "insert into dubs (url, ol, votes) values('%s','%s','%d')" % (url,'#', 0)
+				c.execute(q)
+				con.commit()
+				con.close()
+				return True
+		except Exception as EXP:
+			con.commit()
+			con.close()
+			print False
 
 	def dubs(self, url, ol):
 		con = connect()
