@@ -2,29 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Top 20 Dubs - DubsVote</title>
+    <title>Dubsmash Video - DubsVote</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Loading Bootstrap -->
-    <link href="static/css/vendor/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/vendor/bootstrap.min.css" rel="stylesheet">
 
     <!-- Loading Flat UI -->
-    <link href="static/css/flat-ui.min.css" rel="stylesheet">
-    <meta property="og:image" content="static/img/dubsvote.png" />
-    <meta property="og:image" content="static/img/dubsvote.png" />
+    <link href="/static/css/flat-ui.min.css" rel="stylesheet">
+    <!--<meta property="og:image" content="/static/img/dubsvote.png" />-->
+    <meta property="og:video" content="http://dubsvote.com/dub/frame/{{id}}">
     <meta name="twitter:card" content="summary">
+    <meta name="twitter:player" content="http://dubsvote.com/dub/frame/{{id}}">
     <meta name="twitter:site" content="@dubsvote">
-    <meta name="twitter:title" content="Top 20 Dubs - DubsVote">
+    <meta name="twitter:title" content="Dubmash Video - DubsVote">
     <meta name="twitter:description" content="DubsVote is a webapp based on Dubsmash. DubsVote displays two random dubsmash videos and you have to vote for the one you like. You can also submit your dubs. Share and explore new dubs & keep voting.">
     <meta name="twitter:image:src" content="http://dubsvote.com/static/img/dubsvote.png">
-    <meta property="og:title" content="Top 20 Dubs - DubsVote">
+    <meta property="og:title" content="Dubmash Video - DubsVote">
     <meta property="og:site_name" content="DubsVote">
-    <meta property="og:url" content="http://dubsvote.com">
+    <meta property="og:url" content="http://dubsvote.com/dub/{{id}}">
     <meta property="og:description" content="DubsVote is a webapp based on Dubsmash. DubsVote displays two random dubsmash videos and you have to vote for the one you like. You can also submit your dubs. Share and explore new dubs & keep voting.">
     <meta property="fb:app_id" content="">
     <meta property="og:type" content="product">
-    <link rel="shortcut icon" href="static/img/favicon.ico">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700,900' rel='stylesheet' type='text/css'>
+    <script src="/static/js/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/sweet-alert.css">
     <style>
     body{padding-top:70px; font-family:'Raleway',sans-serif; background-color: #f2f2f2;}
     .load {
@@ -162,8 +165,8 @@
     </style>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
-      <script src="static/js/vendor/html5shiv.js"></script>
-      <script src="static/js/vendor/respond.min.js"></script>
+      <script src="/static/js/vendor/html5shiv.js"></script>
+      <script src="/static/js/vendor/respond.min.js"></script>
     <![endif]-->
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -198,15 +201,26 @@
             <div class="load_cont"><center><div class="contener_general"> <div class="contener_mixte"><div class="ballcolor ball_1">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_2">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div> </div></center></div>
         </div>
     <div class="container">
-        <div class="row"><br>
-            <center><h4>Top 20 Dubs</h4></center><br>
+        <br>
+        <div class="row">
+            <center><video width="400" height="400" id="v22" autoplay controls>
+                <source src="{{url}}" type="video/mp4">
+                    Your browser does not support HTML5 video.
+            </video></center>
+        </div><br>
+        <div class="row">
+            <center><button id="ss1" data-id="{{id}}" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
+                Vote
+            </button></center>
         </div>
+        <br>
         <div class="row">
             <center>
-                <p id="error" style="display:none;"></p>
+                <a href="#" data-href="https://www.facebook.com/sharer/sharer.php?app_id=296476753880441&u=http://dubsvote.com/dub/{{id}}" onclick="pop(this);" id="fbShare"><img src="/static/facebook1.png" style="width:42px;height:42px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#" data-href="https://twitter.com/intent/tweet?url=http://dubsvote.com/dub/{{id}}
+&amp;text=Check out this dubsmash video!&via=dubsvote" onclick="pop(this);" id="twitterShare"><img src="/static/twitter1.png" style="width:42px;height:42px;"></a>
             </center>
         </div>
-        <div id="vd"></div>
     </div>
     <!-- /.container -->
 
@@ -223,47 +237,26 @@
     <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="static/js/vendor/video.js"></script>
-    <script src="static/js/flat-ui.min.js"></script>
+    <script src="/static/js/vendor/video.js"></script>
+    <script src="/static/js/flat-ui.min.js"></script>
     <script>
-        $(document).ready(function() {
+        function vote(pp) {
+            var id = $(pp).data("id");
             $('#lll').show();
-            $.getJSON( "/top/feed", function(response) {
-                $('#lll').fadeOut('slow');
+
+            $.getJSON( "/dub/vote?id="+id, function(response) {
+                $('#lll').hide();
                 if (response.status == 0){
-                    $("#id").text(response.text);
-                    $("#id").show();
+                    swal({     title: "Oops...",     text: response.text,     type: "error",     confirmButtonText: "Okay" , confirmButtonColor: "#1abc9c"  });
                 }
                 else {
-                    $("#id").hide();
-                    var str = response.links;
-                    var links = str.split("|-|");
-                    var str1 = response.ids;
-                    var ids = str1.split("|-|");
-                    var i = 0;
-                    var data = "";
-                    var mdata = "";
-                    var j = 0;
-                    console.log(links.length);
-                    while (i < links.length) {
-                        if (j<3) {
-                            data = data + "<div class=\"col-md-4\"><video width=\"300\" height=\"300\" controls> <source src="+links[i]+" type=\"video/mp4\"> Your browser does not support HTML5 video. </video><p><a href=\"/dub/"+ids[i]+"\"><small>View</small></a></p></div>";
-                             j = j + 1;
-                             i = i+1;
-                        }
-                        else {
-
-                            mdata = mdata + "<div class=\"row\">"+data+"</div>";
-                            data = "";
-                            j = 0;
-                        }
-
-                    }
-                    mdata = mdata + "<div class=\"row\">"+data+"</div>";
-                    $("#vd").html("<center>"+mdata+"</center>");
+                    swal({     title: "Success",     text: response.text,     type: "success",     confirmButtonText: "Okay" , confirmButtonColor: "#1abc9c"  });
+                    $('#ss1').attr("onclick","");
+                    $('#ss1').text("Voted");
+                    $('#ss1').attr("class","btn btn-embossed btn-default btn-wide");
                 }
             });
-        });
+        }
     </script>
   </body>
 </html>

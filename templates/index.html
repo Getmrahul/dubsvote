@@ -174,21 +174,46 @@
         var o = $(ps).data('other');
         $('#lll').show();
 
-        $.getJSON( "/vote?id="+p+"&other="+o, function(response) {
+        $.getJSON( "/vote?id="+p+"&other="+o+"&type="+$('#cl').val(), function(response) {
             $('#lll').hide();
             if (response.status == 0){
                 swal({     title: "Oops...",     text: response.text,     type: "error",     confirmButtonText: "Okay" , confirmButtonColor: "#1abc9c"  });
             }
             else {
-                $('#v1').html('<video width="400" height="400" id="v11" controls> <source src="'+response.v1+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
-                $('#v2').html('<video width="400" height="400" id="v22" controls> <source src="'+response.v2+'" type="video/mp4"> Your browser does not support HTML5 video. </video>');
+                $('#v1').html('<video width="400" height="400" id="v11" controls> <source src="'+response.v1+'" type="video/mp4"> Your browser does not support HTML5 video. </video><p><a href="/dub/'+response.id1+'" target="_blank"><small>View</small></a><p>');
+                $('#v2').html('<video width="400" height="400" id="v22" controls> <source src="'+response.v2+'" type="video/mp4"> Your browser does not support HTML5 video. </video><p><a href="/dub/'+response.id2+'" target="_blank"><small>View</small></a><p>');
+                $('#b1d').html('<center><button id="v1btn" data-id="'+response.id1+'" data-other="'+response.id2+'" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide"> Left </button></center>');
+                $('#b2d').html('<center><button id="v2btn" data-id="'+response.id2+'" data-other="'+response.id1+'" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide"> Right </button></center>');
+                $('#v11').get(0).play();
+                $('#v11')[0].addEventListener('ended', function() {
+                    //do stuff
+                    $('#v22').get(0).play();
+                });
+            }
+        });
+    }
+    function langs(pp) {
+        $('#lll').show();
+        $.getJSON( "/videos?id="+$(pp).data("id"), function(response) {
+            $('#lll').hide();
+            if (response.status == 0){
+                swal({     title: "Oops...",     text: response.text,     type: "error",     confirmButtonText: "Okay" , confirmButtonColor: "#1abc9c"  });
+            }
+            else {
+                var data1 = '<div class="col-md-6"><center><div id="v1"><video width="400" height="400" id="v11" controls> <source src="'+response.url1+'" type="video/mp4"> Your browser does not support HTML5 video. </video><p><a href="/dub/'+response.id1+'" target="_blank"><small>View</small></a><p></div></center></div>';
+                var data2 = '<div class="col-md-6"><center><div id="v2"><video width="400" height="400" id="v22" controls> <source src="'+response.url2+'" type="video/mp4"> Your browser does not support HTML5 video. </video><p><a href="/dub/'+response.id2+'" target="_blank"><small>View</small></a><p></div></center></div>';
+                var f = '<div class="row ">'+data1+data2+'</div>';
+                $('#cl').val($(pp).data("id"));
                 $('#v1btn').attr('data-id',response.id1);
                 $('#v1btn').attr('data-other',response.id2);
                 $('#v2btn').attr('data-id',response.id2);
                 $('#v2btn').attr('data-other',response.id1);
-                $('#v11').get(0).play();
+                $('#lang_select').hide();
+                $('#vid_content').html(f);
+                $('#vid_content').show();
+                $('#vote_opt').show();
+                $('#v11').delay(3000).get(0).play();
                 $('#v11')[0].addEventListener('ended', function() {
-                    //do stuff
                     $('#v22').get(0).play();
                 });
             }
@@ -213,7 +238,7 @@
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-03">
               <span class="sr-only">Toggle navigation</span>
             </button>
-            <a class="navbar-brand" style="color:white;" href="#">DubsVote</a>
+            <a class="navbar-brand" style="color:white;" href="/">DubsVote</a>
           </div>
           <div class="collapse navbar-collapse" id="navbar-collapse-03">
               <ul class="nav navbar-nav navbar-right">
@@ -224,54 +249,57 @@
           </div><!-- /.navbar-collapse -->
       </div>
         </nav>
+        <div id="lll" class="load" style="display:none; background: rgba(24, 24, 24, 0.4)">
+            <div class="load_cont"><center><div class="contener_general"> <div class="contener_mixte"><div class="ballcolor ball_1">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_2">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div> </div></center></div>
+        </div>
         <div class="load">
             <div class="load_cont"><center><div class="contener_general"> <div class="contener_mixte"><div class="ballcolor ball_1">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_2">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div> </div></center></div>
         </div>
     <div class="container">
-
-        <div class="row ">
-
-            <div class="col-md-6">
-                <center><div id="v1"><video width="400" height="400"  id="v11" controls>
-                    <source src="{{url1}}" type="video/mp4">
-                        Your browser does not support HTML5 video.
-                </video></div><p><a href="{{ol1}}"></a><p></center>
+        <div id="lang_select">
+            <br><br>
+            <div class="row">
+                <p class="lead" align="center">Select a language</p>
             </div>
-            <div class="col-md-6">
-                <center><div id="v2"><video width="400" height="400" id="v22" controls>
-                    <source src="{{url2}}" type="video/mp4">
-                        Your browser does not support HTML5 video.
-                </video></div><p><a href="{{ol2}}"></a><p></center>
+            <br>
+            <div class="row">
+                <center>
+                    <button class="btn btn-embossed btn-primary btn-wide" data-id="1" onclick="langs(this);">English</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-embossed btn-primary btn-wide" data-id="2" onclick="langs(this);">Tamil</button>
+                </center>
             </div>
-            <div id="lll" class="load" style="display:none; background: rgba(24, 24, 24, 0.4)">
-                <div class="load_cont"><center><div class="contener_general"> <div class="contener_mixte"><div class="ballcolor ball_1">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_2">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div> <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div> </div></center></div>
+        </div>
+        <div id="vid_content">
+        </div>
+        <div id="vote_opt" style="display:none;">
+            <div class="row" align="center"><p class="lead">Which one is cool?</p></div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4" id="b1d">
+                    <center><button id="v1btn" data-id=""  data-other="" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
+                        Left
+                    </button></center>
+                </div>
+                <div class="col-md-4" id="b2d">
+                    <center><button id="v2btn" data-id="" data-other="" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
+                        Right
+                    </button></center>
+                </div>
+                <div class="col-md-2"></div>
             </div>
-
-        </div><br>
-        <div class="row" align="center"><p class="lead">Which one is cool?</p></div>
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-4">
-                <center><button id="v1btn" data-id="{{id1}}"  data-other="{{id2}}" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
-                    Left
-                </button></center>
+            <br>
+            <div class="row">
+                <center>
+                    <a href="#" data-href="https://www.facebook.com/sharer/sharer.php?app_id=296476753880441&u=http://dubsvote.com/" onclick="pop(this);" id="fbShare"><img src="/static/facebook1.png" style="width:42px;height:42px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" data-href="https://twitter.com/intent/tweet?url=http://dubsvote.com/
+                    &amp;text=DubsVote - Rank The Dubsmash Videos&via=dubsvote" onclick="pop(this);" id="twitterShare"><img src="/static/twitter1.png" style="width:42px;height:42px;"></a>
+                </center>
             </div>
-            <div class="col-md-4">
-                <center><button id="v2btn" data-id="{{id2}}" data-other="{{id1}}" onclick="vote(this);" class="btn btn-embossed btn-primary btn-wide">
-                    Right
-                </button></center>
-            </div>
-            <div class="col-md-2"></div>
-        </div><br>
-        <div class="row">
-            <center>
-                <a href="#" data-href="https://www.facebook.com/sharer/sharer.php?app_id=296476753880441&u=http://dubsvote.com/" onclick="pop(this);" id="fbShare"><img src="/static/facebook1.png" style="width:42px;height:42px;"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="#" data-href="https://twitter.com/intent/tweet?url=http://dubsvote.com/
-&amp;text=DubsVote - Rank The Dubsmash Videos&via=dubsvote" onclick="pop(this);" id="twitterShare"><img src="/static/twitter1.png" style="width:42px;height:42px;"></a>
-            </center>
         </div>
     </div>
     <!-- /.container -->
+    <input type="hidden" id="cl" value="0">
 
 
     <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
@@ -283,15 +311,8 @@
     <script>
     $(window).load(function() {
        $(".load").fadeOut('slow');
+    });
 
-    });
-    $(document).ready(function(){
-        $('#v11').get(0).play();
-        $('#v11')[0].addEventListener('ended', function() {
-            //do stuff
-            $('#v22').get(0).play();
-        });
-    });
     //
     function pop(data) {
     var url = $(data).data("href");
