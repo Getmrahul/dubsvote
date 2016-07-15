@@ -27,7 +27,7 @@ class db(object):
 			db1.close()
 			print EXP
 
-url = "https://api.instagram.com/v1/tags/dubsmashtamil/media/recent?access_token=1718233349.1fb234f.a3ce3d1ff2864de1914ce73b342481ad"
+url = "https://api.instagram.com/v1/tags/dubsmashtamil/media/recent?access_token=***"
 mC = 0
 while mC < 439:
 	i = 0
